@@ -12,10 +12,14 @@ LABEL io.k8s.description="Platform for building and running Perl 5.20 applicatio
       io.k8s.display-name="Apache 2.4 with mod_perl/5.20" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,perl,perl520"
+  
+
+RUN yum install -y perl-CPAN
+RUN yum install -y perl-Template-Toolkit
 
 # TODO: Cleanup cpanp cache after cpanminus is installed?
 RUN yum install -y centos-release-scl && \
-    INSTALL_PKGS="rh-perl520 rh-perl520-perl-devel rh-perl520-mod_perl rh-perl520-perl-CPAN" && \
+    INSTALL_PKGS="rh-perl520 rh-perl520-perl-devel rh-perl520-mod_perl rh-perl520-perl-CPAN rh-perl1520-perl-dbi libaio" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all
@@ -40,10 +44,7 @@ RUN ln -s /usr/local/instantclient_11_2 /usr/local/instantclient
 RUN ln -s /usr/local/instantclient/libclntsh.so.11.1 /usr/local/instantclient/libclntsh.so
 RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 
-RUN yum install -y perl-DBI
-RUN yum install -y perl-CPAN
-RUN yum install -y perl-Template-Toolkit
-RUN cd /usr/local/ cpan> get DBD::Oracle
+
 # In order to drop the root user, we have to make some directories world
 # writeable as OpenShift default security model is to run the container under
 # random UID.
