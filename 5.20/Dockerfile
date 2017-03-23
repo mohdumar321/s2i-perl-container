@@ -26,7 +26,24 @@ COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 # Each language image can have 'contrib' a directory with extra files needed to
 # run and build the applications.
 COPY ./contrib/ /opt/app-root
+# Oracle instantclient
+RUN cp /opt/app-root/etc/oracle/instantclient-basic-linux.x64-11.2.0.4.0.zip /usr/local/instantclient-basic-linux.x64-11.2.0.4.0.zip
+RUN cp /opt/app-root/etc/oracle/instantclient-sdk-linux.x64-11.2.0.4.0.zip /usr/local/instantclient-sdk-linux.x64-11.2.0.4.0.zip
+RUN cp /opt/app-root/etc/oracle/instantclient-sqlplus-linux.x64-11.2.0.4.0.zip /usr/local/instantclient-sqlplus-linux.x64-11.2.0.4.0.zip
 
+RUN yum install -y unzip
+#mkdir -p /etc/local /etc/bin
+RUN unzip /usr/local/instantclient-basic-linux.x64-11.2.0.4.0.zip -d /usr/local
+RUN unzip /usr/local/instantclient-sdk-linux.x64-11.2.0.4.0.zip -d /usr/local
+RUN unzip /usr/local/instantclient-sqlplus-linux.x64-11.2.0.4.0.zip -d /usr/local
+RUN ln -s /usr/local/instantclient_11_2 /usr/local/instantclient
+RUN ln -s /usr/local/instantclient/libclntsh.so.11.1 /usr/local/instantclient/libclntsh.so
+RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
+
+RUN yum install -y perl-DBI
+RUN yum install -y perl-CPAN
+RUN yum install -y perl-Template-Toolkit
+RUN cd /usr/local/ cpan> get DBD::Oracle
 # In order to drop the root user, we have to make some directories world
 # writeable as OpenShift default security model is to run the container under
 # random UID.
