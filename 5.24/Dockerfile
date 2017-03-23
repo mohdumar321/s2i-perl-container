@@ -7,6 +7,8 @@ EXPOSE 8080
 
 # Image metadata
 ENV PERL_VERSION=5.24
+ENV ORACLE_HOME=/usr/local/instantclient_11_2
+
 
 LABEL io.k8s.description="Platform for building and running Perl 5.24 applications" \
       io.k8s.display-name="Apache 2.4 with mod_perl/5.24" \
@@ -19,7 +21,7 @@ RUN yum install -y perl-Template-Toolkit
 
 RUN yum install -y centos-release-scl && \
     yum-config-manager --enable centos-sclo-rh-testing && \
-    INSTALL_PKGS="rh-perl524 rh-perl524-perl-devel rh-perl524-mod_perl rh-perl524-perl-CPAN rh-perl524-perl-App-cpanminus rh-perl-1524-perl-dbi libaio" && \
+    INSTALL_PKGS="rh-perl524 rh-perl524-perl-devel rh-perl524-mod_perl rh-perl524-perl-CPAN rh-perl524-perl-App-cpanminus rh-perl524-perl-dbi libaio" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all
