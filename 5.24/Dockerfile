@@ -13,9 +13,13 @@ LABEL io.k8s.description="Platform for building and running Perl 5.24 applicatio
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,perl,perl524"
 
+
+RUN yum install -y perl-CPAN
+RUN yum install -y perl-Template-Toolkit
+
 RUN yum install -y centos-release-scl && \
     yum-config-manager --enable centos-sclo-rh-testing && \
-    INSTALL_PKGS="rh-perl524 rh-perl524-perl-devel rh-perl524-mod_perl rh-perl524-perl-CPAN rh-perl524-perl-App-cpanminus" && \
+    INSTALL_PKGS="rh-perl524 rh-perl524-perl-devel rh-perl524-mod_perl rh-perl524-perl-CPAN rh-perl524-perl-App-cpanminus rh-perl-1524-perl-dbi libaio" && \
     yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all
@@ -45,10 +49,7 @@ RUN ln -s /usr/local/instantclient_11_2 /usr/local/instantclient
 RUN ln -s /usr/local/instantclient/libclntsh.so.11.1 /usr/local/instantclient/libclntsh.so
 RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 
-RUN yum install -y perl-DBI
-RUN yum install -y perl-CPAN
-RUN yum install -y perl-Template-Toolkit
-RUN cd /usr/local/ cpan> get DBD::Oracle
+
 
 RUN mkdir -p /opt/app-root/etc/httpd.d && \
     sed -i -f /opt/app-root/etc/httpdconf.sed /opt/rh/httpd24/root/etc/httpd/conf/httpd.conf  && \
